@@ -2,9 +2,9 @@
 layout:     post
 title:      "Hello blog"
 subtitle:   " \"Hello World, Hello Blog\""
-date:       2015-01-29 12:00:00
+date:       2024-10-09 20:16:00
 author:     "wanqing"
-header-img: "img/post-bg-2015.jpg"
+header-img: "img/post-bg-2024.jpg"
 catalog: true
 tags:
     - start
