@@ -7,7 +7,7 @@ author:     "wanqing"
 header-img: "img/in-post/post.jpg"
 catalog: true
 tags:
-    - 想法
+    - 做一个积极向上的普通人
 ---
 
 > “Sometimes, I really miss her. ”

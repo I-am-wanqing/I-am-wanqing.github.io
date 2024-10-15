@@ -146,7 +146,7 @@ Modules *[Featured Tags](#featured-tags)*, *[Mini About Me](#mini-about-me)* and
 
 It would be hidden in a smaller screen when the entire sidebar are pushed to bottom. Since there is already SNS portion there in the footer.
 
-### Featured Tags
+### 
 
 **Featured-Tags** is similar to any cool tag features in website like [Medium](http://medium.com).
 Started from V1.4, this module can be used even when sidebar is off and displayed always in the bottom. 
