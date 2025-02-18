@@ -1,3 +1,14 @@
+---
+layout:     post
+title:      "计算机网络笔记"
+subtitle:   " \"—— 基础\""
+date:       2025-1-9 19:44:00
+author:     "wanqing"
+header-img: "img/in-post/post.jpg"
+catalog: true
+tags:
+    - 网安笔记
+---
 # 计算机网络基础
 ## 1. 网络定义
 - 决定数据的格式和传输的一组规则或者一组惯例
