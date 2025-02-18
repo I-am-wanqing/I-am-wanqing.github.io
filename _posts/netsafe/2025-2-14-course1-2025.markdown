@@ -1,7 +1,7 @@
 ---
 layout:     post
-title:      "网安笔记"
-subtitle:   " \"—— 基础知识\""
+title:      "网安基础入门"
+subtitle:   " \"—— 概念名词\""
 date:       2025-2-14 19:44:00
 author:     "wanqing"
 header-img: "img/in-post/post.jpg"

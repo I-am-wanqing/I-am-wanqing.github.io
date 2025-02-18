@@ -1,0 +1,18 @@
+---
+layout:     post
+title:      "网安基础入门"
+subtitle:   " \"—— 搭建安全扩展\""
+date:       2025-2-17 19:44:00
+author:     "wanqing"
+header-img: "img/in-post/post.jpg"
+catalog: true
+tags:
+    - 网安笔记
+---
+# 搭建安全扩展
+## 常见搭建平台脚本启动
+- IIS
+## 域名IP目录解析安全问题
+## 常见文件后缀解析对应安全
+## 常见安全测试中对应的安全防护
+## WEB后门与用户及安全权限
