@@ -1,0 +1,23 @@
+---
+layout:     post
+title:      "刷题中的python笔记"
+subtitle:   " \"leetcode刷简单题的python语法笔记\""
+date:       2025-2-24 13:34:00
+author:     "wanqing"
+header-img: "img/in-post/post.jpg"
+catalog: true
+tags:
+    - python
+    - leetcode
+---
+
+1. self：表示当前类的实例
+- 通过 self 可以访问和修改实例变量
+- 通过 self 可以调用类的其他方法
+- self 可以将当前实例传递给其他函数或方法
+2. 统计列表中元素的计数
+- from collections import Counter ｜ counter = Counter(my_list) ｜ print(counter[2]) 
+- count = my_list.count(2)
+3. 统计列表中最大最小元素
+- max_num = max(my_list)
+- min_num = min(my_list)
