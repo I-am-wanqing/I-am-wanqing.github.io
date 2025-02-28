@@ -21,3 +21,9 @@ tags:
 3. 统计列表中最大最小元素
 - max_num = max(my_list)
 - min_num = min(my_list)
+4. 切片
+- my_list[start:end] # start是包含的，end是排除的
+- my_list[start:] # start是包含的，end是最后一个元素
+- my_list[:end] # start是0，end是排除的
+- my_list[start:end:step] # step是步长
+5. A = ans 不会修改原始数组：在 Python 中，A = ans 只是将局部变量 A 指向一个新的列表 ans，而不会修改传入的原始数组。
