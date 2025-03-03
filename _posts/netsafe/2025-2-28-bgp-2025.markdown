@@ -145,3 +145,141 @@ tags:
 ![alt text](image-7.png)
      - 路由反射器反射bgp信息给其他ibgp路由器
 - 联盟
+
+## 补：IBGP配置原则
+- IBGP（Internal BGP）是用于在同一自治系统（AS）内的路由器之间交换BGP路由信息的协议。与eBGP（External BGP）不同，IBGP不修改路由的AS路径属性，且通常用于在AS内部传播从外部学习到的路由信息。
+- 全互联原则：在IBGP中，为了防止路由信息丢失，通常要求所有运行IBGP的路由器之间建立全互联的会话（Full Mesh）。这是因为IBGP路由器不会将从一个IBGP对等体学习到的路由信息转发给另一个IBGP对等体。
+- 下一跳属性：IxiBGP不会修改路由的下一跳属性。如果从eBGP学习到的路由通过IBGP传播，下一跳仍然是外部路由器的IP地址。因此，内部路由器需要能够到达该下一跳地址。
+- 配置路由反射器：为了避免全互联的复杂性，可以使用路由反射器（Route Reflector, RR）。路由反射器允许IBGP路由器将从一个IBGP对等体学习到的路由信息转发给其他IBGP对等体。
+
+## BGP路径属性详细介绍
+### **BGP 属性描述及取值范围**
+
+BGP（Border Gateway Protocol）使用一系列路径属性（Path Attributes）来决定最佳路径。以下是你列出的 BGP 相关属性及其取值范围：
+
+---
+
+#### **μ1 Local Preference（本地优先级）**
+- **作用**：用于在**同一个 AS（自治系统）**内部选择最佳路径，数值越**大**优先级越高。
+- **范围**：`0` ～ `4294967295`（32 位无符号整数）
+- **默认值**：
+  - Cisco 设备默认值：`100`
+  - 本地优先级只在 **iBGP（内部 BGP）** 传播，**eBGP（外部 BGP）不传播**。
+
+- **配置示例**：
+  ```bash
+  route-map SET-LOCAL-PREF permit 10
+  set local-preference 200  # 设置 Local Preference 为 200
+
+  router bgp 65000
+  neighbor 192.168.1.1 route-map SET-LOCAL-PREF in
+  ```
+
+---
+
+#### **μ2 AS Path Length（AS 路径长度）**
+- **作用**：BGP 选择路径时，**AS Path 越短，优先级越高**。
+- **范围**：理论上无固定长度限制，但 BGP 消息长度最大为 `4096` 字节，AS Path 受此影响。
+- **值的构成**：由多个 **AS 号（Autonomous System Number, ASN）** 组成，例如：
+  ```
+  65001 65002 65003
+  ```
+  表示经过 `65001 → 65002 → 65003` 这 3 个 AS。
+
+- **优化示例（AS Path Prepending 增加路径长度，使某条路径不被首选）**：
+  ```bash
+  route-map PREPEND-AS permit 10
+  set as-path prepend 65000 65000 65000  # 让该路径看起来更长
+  ```
+
+---
+
+#### **μ3 Origin Type（路由来源类型）**
+- **作用**：指示该 BGP 路由的来源类型，BGP 在路径选择时**优先级从高到低**：
+  1. **IGP（内部生成，最优）** → `i`
+  2. **EGP（外部网关协议生成，次优）** → `e`
+  3. **Incomplete（未知来源，最差）** → `?`
+
+- **取值**：
+  - `i` （IGP）：该路由由 `network` 命令引入 BGP。
+  - `e` （EGP）：该路由通过**旧版 EGP 协议**学习（不常见）。
+  - `?` （Incomplete）：该路由通过 `redistribute` 命令引入 BGP，来源不明确。
+
+- **查看示例**：
+  ```bash
+  show ip bgp
+  ```
+  输出示例：
+  ```
+  *> 192.168.1.0/24    65001 i
+  ```
+
+---
+
+#### **μ4 Multi-Exit Discriminator（MED，多出口鉴别器）**
+- **作用**：用于**同一 AS** 内的不同出口路由之间的选择，数值越**小**优先级越高。
+- **范围**：`0` ～ `4294967295`（32 位无符号整数）
+- **默认值**：
+  - 若未手动设置，则默认为 `0`。
+  - 仅在 AS **外部**传递，iBGP 内部不会传递 MED 值，除非使用 `bgp always-compare-med`。
+
+- **配置示例**：
+  ```bash
+  route-map SET-MED permit 10
+  set metric 50  # 设置 MED 值为 50
+
+  router bgp 65000
+  neighbor 192.168.1.1 route-map SET-MED out
+  ```
+
+---
+
+#### **μ5 eBGP Advertisement（eBGP 路由通告规则）**
+- **作用**：控制 BGP 路由在 **eBGP（外部 BGP）** 邻居间的传播规则。
+- **取值**：
+  - `active`（主动发起连接）
+  - `passive`（被动监听）
+  - `advertised`（允许通告）
+  - `not-advertised`（不通告）
+
+- **默认行为**：
+  - BGP 只会将**最优路径（Best Path）** 发送给 eBGP 邻居。
+  - **iBGP 学到的路由不会默认通告给其他 iBGP 邻居**（需要 `route reflector` 或 `full mesh` 配置）。
+
+- **控制通告示例**：
+  ```bash
+  neighbor 192.168.1.1 send-community  # 允许发送社区属性
+  neighbor 192.168.1.1 next-hop-self  # 强制使用本设备 IP 作为下一跳
+  ```
+
+---
+
+#### **μ6 Speaker ID（BGP Speaker 标识符）**
+- **作用**：BGP Speaker ID 通常指 **Router ID**，用于标识 BGP 设备。
+- **取值**：
+  - `0.0.0.0` ～ `255.255.255.255`（IPv4 格式）
+  - 通常是设备上**最大 IP 地址**，但可手动指定。
+
+- **配置示例**：
+  ```bash
+  router bgp 65000
+  bgp router-id 1.1.1.1
+  ```
+
+---
+
+### **总结**
+| 属性 | 作用 | 取值范围 |
+|------|------|--------|
+| **Local Preference** | 选择 AS 内最佳路径，值越大优先级越高 | `0` ～ `4294967295`（默认 `100`） |
+| **AS Path Length** | 选择 AS 间路径，越短优先级越高 | 无固定长度（受 BGP 消息 4096 字节限制） |
+| **Origin Type** | 指示 BGP 路由来源 | `i`（IGP，最优），`e`（EGP），`?`（未知，最差） |
+| **Multi-Exit Discriminator (MED)** | 影响同一 AS 内多个出口的选择，值越小优先级越高 | `0` ～ `4294967295`（默认 `0`） |
+| **eBGP Advertisement** | 控制 eBGP 路由通告行为 | `active`、`passive`、`advertised`、`not-advertised` |
+| **Speaker ID（Router ID）** | 标识 BGP 设备 | `0.0.0.0` ～ `255.255.255.255` |
+
+这些 BGP 属性共同作用，影响 BGP 的路径选择。你可以根据实际网络需求进行优化，比如：
+- 使用 **Local Preference** 控制**出站流量**。
+- 使用 **AS Path Prepending** 控制**入站流量**。
+- 使用 **MED** 影响**AS 内不同出口的选择**。
+
