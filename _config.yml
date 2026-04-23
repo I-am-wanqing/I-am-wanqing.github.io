@@ -4,7 +4,7 @@ SEOTitle: 晚晴的博客 | WanQing Blog
 header-img: img/home-bg.jpg
 email: 2046508079@qq.com
 description: "这里是 @wanqingLiu晚晴 的个人博客，与你一起发现更大的世界 | 相信技术，传递价值"
-keyword: "博客, 个人网站, 互联网, Web, JavaScript, React, React Native, 前端, 设计"
+keyword: "互联网, 网络配置, 网络安全, 渗透测试"
 url: "https://space.bilibili.com/452689323" # your host, for absolute URL
 baseurl: "" # for example, '/blog' if your blog hosted on 'host/blog'
 
@@ -13,12 +13,7 @@ future: true
 
 # SNS settings
 RSS: false
-weibo_username: wanqing
-zhihu_username: wanqing
-github_username: wanqing
-twitter_username: wanqing
-#facebook_username:  huxpro
-#linkedin_username:  firstname-lastname-idxxxx
+github_username: I-am-wanqing
 
 # Build settings
 # from 2016, 'pygments' is unsupported on GitHub Pages. Use 'rouge' for highlighting instead.
